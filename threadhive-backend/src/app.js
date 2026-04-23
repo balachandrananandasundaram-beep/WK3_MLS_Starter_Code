@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-// import threadRoutes from './routes/threads.js';
+import threadRoutes from './routes/threads.js';
 import subredditRoutes from "./routes/subreddits.js";
 
 // Import models so that they are registered with Mongoose
