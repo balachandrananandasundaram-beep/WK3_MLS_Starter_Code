@@ -29,15 +29,16 @@ export const createNewSubreddit = async (name, description, author) => {
 // 3. Fetch a subreddit AND its threads
 // ------------------------------------------------------
 export const fetchSubredditWithThreads = async (id) => {
-   const subreddit = await Subreddit.findById(id);
-  if (!subreddit) 
+  const subreddit = await Subreddit.findById(id);
+
+  if (!subreddit) {
     return null;
   }
+
   const threads = await Thread.find({ subreddit: id })
-     .populate("author")
-     // sorting gives good UX improvement
-     .sort({ createdAt: -1 });
+    .populate("author")
+    .sort({ createdAt: -1 });
 
   return { subreddit, threads };
-
 };
+
