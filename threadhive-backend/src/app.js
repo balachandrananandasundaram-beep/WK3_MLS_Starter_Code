@@ -21,7 +21,7 @@ app.use(
 );
 
 // Routes
-// app.use('/api/threads', threadRoutes);
+app.use('/api/threads', threadRoutes);
 app.use("/api/subreddits", subredditRoutes);
 
 export default app;
