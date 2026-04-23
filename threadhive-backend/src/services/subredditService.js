@@ -12,7 +12,7 @@ export const fetchAllSubreddits = async () => {
 // 2. Create a new subreddit
 // ------------------------------------------------------
 export const createNewSubreddit = async (name, description, author) => {
-# Look for Duplicates
+  // Look for Duplicates
  const existingSubreddit = await Subreddit.findOne({ name });
 
   if (existingSubreddit) {
