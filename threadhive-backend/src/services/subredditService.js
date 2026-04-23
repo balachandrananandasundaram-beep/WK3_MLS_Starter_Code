@@ -35,7 +35,7 @@ export const fetchSubredditWithThreads = async (id) => {
   }
   const threads = await Thread.find({ subreddit: id })
      .populate("author")
-# sorting gives good UX improvement
+     // sorting gives good UX improvement
      .sort({ createdAt: -1 });
 
   return { subreddit, threads };
