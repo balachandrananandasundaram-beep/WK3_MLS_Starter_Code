@@ -1,0 +1,115 @@
+{
+  "info": {
+    "name": "ThreadHive - Thread Endpoints",
+    "description": "Postman collection for all Thread API endpoints in the ThreadHive backend.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api",
+      "type": "string"
+    },
+    {
+      "key": "threadId",
+      "value": "69ea9fb257661967309e7c46",
+      "type": "string",
+      "description": "Replace with a valid Thread _id from your database"
+    }
+  ],
+  "item": [
+    {
+      "name": "Get All Threads",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/threads",
+          "host": ["{{baseUrl}}"],
+          "path": ["threads"]
+        },
+        "description": "Returns all threads sorted by creation date (newest first), with author and subreddit populated."
+      }
+    },
+    {
+      "name": "Get Thread by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/threads/{{threadId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["threads", "{{threadId}}"]
+        },
+        "description": "Returns a single thread by its MongoDB ObjectId, with author and subreddit populated. Returns 404 if not found."
+      }
+    },
+    {
+      "name": "Create Thread",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"What are the best resources for learning Express.js?\",\n  \"content\": \"I'm starting to learn backend development with Node.js and Express. Any recommended tutorials, courses, or books?\",\n  \"author\": \"69ea9fb157661967309e7c36\",\n  \"subreddit\": \"69ea9fb257661967309e7c42\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/threads",
+          "host": ["{{baseUrl}}"],
+          "path": ["threads"]
+        },
+        "description": "Creates a new thread. Required fields: title, content, author (User ObjectId), subreddit (Subreddit ObjectId). Returns 201 with populated author (name) and subreddit (name, description). Returns 400 if any required field is missing."
+      }
+    },
+    {
+      "name": "Update Thread",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Updated: Best resources for learning Express.js\",\n  \"content\": \"Updated content with more details about Express.js learning paths.\",\n  \"upvotes\": 10,\n  \"downvotes\": 1,\n  \"voteCount\": 9\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/threads/{{threadId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["threads", "{{threadId}}"]
+        },
+        "description": "Updates an existing thread by its MongoDB ObjectId. Allowed fields: title, content, upvotes, downvotes, voteCount. All fields are optional — only provided fields are updated. Returns 404 if the thread does not exist."
+      }
+    },
+    {
+      "name": "Delete Thread",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/threads/{{threadId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["threads", "{{threadId}}"]
+        },
+        "description": "Deletes a thread by its MongoDB ObjectId. Returns 200 with the deleted document on success. Returns 404 if the thread does not exist."
+      }
+    }
+  ]
+}

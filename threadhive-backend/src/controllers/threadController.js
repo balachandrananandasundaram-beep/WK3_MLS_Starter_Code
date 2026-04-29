@@ -99,7 +99,13 @@ export const createThread = async (req, res) => {
 // PUT /api/threads/:id
 export const updateThread = async (req, res) => {
   try {
-    const updatedThread = await updateThreadById(req.params.id, req.body);
+    const { title, content, upvotes, downvotes, voteCount } = req.body;
+    const allowedUpdates = { title, content, upvotes, downvotes, voteCount };
+    // Remove undefined keys so unset fields are not overwritten
+    Object.keys(allowedUpdates).forEach(
+      (key) => allowedUpdates[key] === undefined && delete allowedUpdates[key]
+    );
+    const updatedThread = await updateThreadById(req.params.id, allowedUpdates);
 
     if (!updatedThread) {
       return res.status(404).json({

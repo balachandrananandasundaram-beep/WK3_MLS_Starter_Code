@@ -21,7 +21,7 @@ export const createNewThread = async (title, content, author, subreddit) => {
 
   return await Thread.findById(newThread._id)
     .populate({ path: "subreddit", select: "name description" })
-    .populate({ path: "author", select: "username" });
+    .populate({ path: "author", select: "name" });
 };
 
 export const updateThreadById = async (id, updateData) => {
