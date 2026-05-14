@@ -1,58 +1,89 @@
 ## Project Context
 
-This is a social media application where users can create communities, post discussion topics, and interact with content. The backend is built with Node.js, Express.js, and MongoDB.
+ThreadHive — social media app (communities, threads, discussions). Week 3: REST API without auth, using Node.js, Express 5, MongoDB/Mongoose, ESM modules.
 
-### General Coding Guidelines
+The Node.js app lives in `threadhive-backend/`. The `models/` folder at the repo root contains reference Mongoose schemas.
 
-- Use modern ES6+ syntax (async/await, arrow functions, destructuring)
-- Use ESM modules (import/export) instead of CommonJS
-- Write clean, readable code with meaningful variable names
-- Follow RESTful API design principles
-- Use proper HTTP status codes
+## Build & Run
 
-### Error Handling
+```bash
+cd threadhive-backend
+npm install
+npm run dev      # nodemon main.js
+npm start        # node main.js
+npm run populate # seed the database
+```
 
-- Log errors to console with sufficient context
-- Never expose internal error details to clients in production
+Entry flow: `main.js` → dotenv → `db.js` (Mongoose connect) → `server.js` → Express app in `src/app.js`.
 
-### Security
+## Architecture
 
-- Validate all user inputs
-- Sanitize data before database operations
-- Use environment variables for sensitive data
-- Never commit secrets or API keys
+```
+threadhive-backend/
+├── db.js               # connectToDB() / disconnectFromDB()
+├── server.js           # startServer() / stopServer()
+├── main.js             # Entry point
+└── src/
+    ├── app.js          # Express setup: cors, routes, errorHandler
+    ├── controllers/    # subredditController.js, threadController.js
+    ├── routes/         # subreddits.js, threads.js
+    ├── models/         # Mongoose schemas
+    ├── services/       # Business logic + DB operations
+    └── scripts/        # populate_db.js
+```
 
-### API Response Format
+## API Reference
 
-All successful API responses should follow this structure:
-{
-"success": true,
-"data": { ... },
-"message": "Optional success message"
-}
+See [`threadhive-backend/resources/finalized-apis.md`](threadhive-backend/resources/finalized-apis.md) for the full endpoint list.  
+A Postman collection is at `threadhive-backend/resources/threadhive-threads.postman_collection.json`.
 
-For errors:
-{
-"success": false,
-"message": "Error message"
-}
+Base URL: `http://localhost:3000/api`
 
-### File Organization
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/subreddits` | List all subreddits |
+| POST | `/api/subreddits` | Create subreddit |
+| GET | `/api/subreddits/:id` | Get subreddit by ID |
+| GET | `/api/threads` | List all threads |
+| GET | `/api/threads/:id` | Get thread by ID |
+| POST | `/api/threads` | Create thread |
+| PUT | `/api/threads/:id` | Update thread |
+| DELETE | `/api/threads/:id` | Delete thread |
 
-- Controllers in `/controllers` directory
-- Routes in `/routes` directory
-- Models in `/models` directory
-- Services in `/services` directory
+## Environment Variables
 
-## What to Prefer
+Create `threadhive-backend/.env`:
 
-- async/await over callbacks or raw promises
-- Modular, single-responsibility functions
-- Route handlers that delegate to controller functions
+```
+MONGODB_URI=mongodb://localhost:27017/threadhive
+PORT=3000
+NODE_ENV=development
+```
+
+Never hardcode connection strings or secrets.
+
+## Code Style
+
+- ES6+: async/await, arrow functions, destructuring
+- ESM (`import`/`export`) — `package.json` has `"type": "module"`
+- Controllers are thin: validate input, call service, send response
+- Services own DB logic: query Mongoose models, throw errors on failure
+
+## API Response Format
+
+Success:
+```json
+{ "success": true, "data": { ... }, "message": "Optional" }
+```
+
+Error:
+```json
+{ "success": false, "message": "Error message" }
+```
 
 ## What to Avoid
 
-- Global variables
-- Overly complex nested logic
-- Hardcoded values (use constants or env variables)
-- Missing error handling
+- CommonJS (`require`/`module.exports`)
+- Hardcoded values — use env vars or constants
+- Business logic in controllers — delegate to services
+- Exposing internal error details to clients
